@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareConnect | Senior Care Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">Guardian</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="profile.html">My Profile</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="caregiver-register.html">Register as Caregiver</a></li>
+                <li><a href="#" id="logoutBtn" class="logout-btn" style="display: none;">Logout</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Home Search Section -->
+        <div class="section active" id="homeSearch">
+            <h2>Find the Right Care for Your Loved Ones</h2>
+            <div class="search-container">
+                <form id="searchForm" onsubmit="handleSearch(event)">
+                    <div class="form-group">
+                        <label>Select Elder</label>
+                        <select name="elderSelect" id="elderSelect" required>
+                            <option value="">Select an elder</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Type of Care Required</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="careType" value="personalCare"> Personal Care
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="careType" value="medicalCare"> Medical Care
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="careType" value="householdSupport"> Household Support
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="careType" value="specialisedCare"> Specialised Care
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="careType" value="respiteCare"> Respite Care
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" name="startDate" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="date" name="endDate" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Budget Range (per day)</label>
+                        <select name="budgetRange" required>
+                            <option value="">Select budget range</option>
+                            <option value="0-500">₹0 - ₹500</option>
+                            <option value="501-1000">₹501 - ₹1000</option>
+                            <option value="1001-2000">₹1001 - ₹2000</option>
+                            <option value="2001-3000">₹2001 - ₹3000</option>
+                            <option value="3001+">₹3001+</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" name="location" placeholder="Enter pin code or area" required>
+                    </div>
+                    
+                    <button type="submit">Search Caregivers</button>
+                </form>
+            </div>
+            
+            <div class="search-results" id="searchResults">
+                <!-- Search results will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Phone Login Section -->
+        <div class="section" id="phoneLogin">
+            <h2>Welcome to CareConnect</h2>
+            <div class="form-group">
+                <label>Enter Phone Number</label>
+                <input type="tel" id="phoneInput" placeholder="Enter 10-digit phone number" maxlength="10" pattern="[0-9]{10}">
+            </div>
+            <button id="sendOTPBtn" disabled>Send OTP</button>
+        </div>
+
+        <!-- OTP Verification -->
+        <div class="section" id="otpVerification">
+            <h2>Verify OTP</h2>
+            <div class="otp-container" id="otpInputs"></div>
+            <button onclick="verifyOTP()">Verify OTP</button>
+        </div>
+
+        <!-- Guardian Profile Creation -->
+        <div class="section" id="guardianProfile">
+            <h2>Create Guardian Profile</h2>
+            <form id="guardianForm" onsubmit="handleGuardianSubmit(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" name="age" required min="18" max="120">
+                </div>
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select name="gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Profile Photo</label>
+                    <input type="file" name="profilePhoto" accept="image/*" required>
+                    <div class="photo-preview" id="guardianPhotoPreview"></div>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea name="address" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Pin Code</label>
+                    <input type="text" name="pinCode" pattern="[0-9]{6}" maxlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label>Emergency Contact</label>
+                    <input type="tel" name="emergencyContact" required>
+                </div>
+                <div class="form-group">
+                    <label>Neighbour Contact Information</label>
+                    <div class="neighbour-info">
+                        <input type="text" name="neighbourName" placeholder="Neighbour Name" required>
+                        <input type="tel" name="neighbourPhone" placeholder="Neighbour Phone" required>
+                        <input type="text" name="neighbourHomeNumber" placeholder="Home Number" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Doctor Information</label>
+                    <div class="doctor-info">
+                        <input type="text" name="doctorName" placeholder="Doctor Name" required>
+                        <input type="tel" name="doctorPhone" placeholder="Doctor Phone" required>
+                    </div>
+                </div>
+                <button type="submit">Create Profile</button>
+            </form>
+        </div>
+
+        <!-- Elder Profile Creation -->
+        <div class="section" id="elderProfile">
+            <h2>Add Elder Profile</h2>
+            <form id="elderForm" onsubmit="handleElderSubmit(event)">
+                <div class="form-group">
+                    <label>Elder's Full Name</label>
+                    <input type="text" name="elderName" required>
+                </div>
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" name="age" required min="1" max="120">
+                </div>
+                <div class="form-group">
+                    <label>Type of Relation</label>
+                    <select name="relationType" required>
+                        <option value="">Select Relation</option>
+                        <option value="mother">Mother</option>
+                        <option value="father">Father</option>
+                        <option value="grandfather">Grandfather</option>
+                        <option value="grandmother">Grandmother</option>
+                        <option value="uncle">Uncle</option>
+                        <option value="aunt">Aunt</option>
+                        <option value="relative">Relative</option>
+                        <option value="friend">Friend</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Profile Photo</label>
+                    <input type="file" name="elderPhoto" accept="image/*" required>
+                    <div class="photo-preview" id="elderPhotoPreview"></div>
+                </div>
+                <div class="form-group">
+                    <label>Medical History</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="medicalHistory" value="diabetes"> Diabetes
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="medicalHistory" value="bloodPressure"> Blood Pressure
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="medicalHistory" value="dementia"> Dementia
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="medicalHistory" value="kneePain"> Knee Pain
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="medicalHistory" value="arthritis"> Arthritis
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="medicalHistory" value="heartDisease"> Heart Disease
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="medicalHistory" value="respiratoryIssues"> Respiratory Issues
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="medicalHistory" value="other"> Other
+                        </label>
+                    </div>
+                    <textarea name="otherMedicalHistory" placeholder="Specify other medical conditions"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Type of Care Required</label>
+                    <div class="care-types">
+                        <div class="care-category">
+                            <h4>Personal Care (ADLs)</h4>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="personalCare" value="bathing"> Bathing
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="personalCare" value="dressing"> Dressing
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="personalCare" value="toileting"> Toileting
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="personalCare" value="feeding"> Feeding
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="personalCare" value="oralHygiene"> Oral Hygiene
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="personalCare" value="walking"> Walking
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="personalCare" value="transfers"> Transfers
+                                </label>
+                            </div>
+                        </div>
+                        <div class="care-category">
+                            <h4>Medical Care / Health Care</h4>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="medicalCare" value="medicationManagement"> Medication Management
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="medicalCare" value="woundCare"> Wound Care
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="medicalCare" value="vitalMonitoring"> Vital Monitoring
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="medicalCare" value="therapySupport"> Therapy Support
+                                </label>
+                            </div>
+                        </div>
+                        <div class="care-category">
+                            <h4>Household Support</h4>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="householdSupport" value="mealPreparation"> Meal Preparation
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="householdSupport" value="cleaning"> Cleaning
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="householdSupport" value="laundry"> Laundry
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="householdSupport" value="dishwashing"> Dishwashing
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="householdSupport" value="grocery"> Grocery
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="householdSupport" value="homeSafety"> Home Safety
+                                </label>
+                            </div>
+                        </div>
+                        <div class="care-category">
+                            <h4>Specialised Care</h4>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="specialisedCare" value="chronicIllnessCare"> Chronic Illness Care
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="specialisedCare" value="postSurgeryCare"> Post-Surgery/Hospitalization Care
+                                </label>
+                            </div>
+                        </div>
+                        <div class="care-category">
+                            <h4>Respite Care</h4>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="respiteCare" value="emergencyCoverage"> Emergency Coverage
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="respiteCare" value="temporaryRelief"> Temporary Relief
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea name="address" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Pin Code</label>
+                    <input type="text" name="pinCode" pattern="[0-9]{6}" maxlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label>Neighbour Contact Information</label>
+                    <div class="neighbour-info">
+                        <input type="text" name="neighbourName" placeholder="Neighbour Name" required>
+                        <input type="tel" name="neighbourPhone" placeholder="Neighbour Phone" required>
+                        <input type="text" name="neighbourHomeNumber" placeholder="Home Number" required>
+                    </div>
+                </div>
+                <button type="submit">Add Elder</button>
+            </form>
+        </div>
+
+        <!-- Profile View Section -->
+        <div class="section" id="profileView">
+            <h2>Your Profile</h2>
+            <div class="profile-container">
+                <div class="guardian-info">
+                    <h3>Guardian Information</h3>
+                    <div id="guardianInfo"></div>
+                </div>
+                <div class="elders-list">
+                    <h3>Elder Profiles</h3>
+                    <div id="eldersList"></div>
+                </div>
+            </div>
+            <button onclick="addNewElder()" id="addElderBtn">Add Another Elder</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 

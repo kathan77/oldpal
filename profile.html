@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | CareConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">Guardian</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="profile.html" class="active">My Profile</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="#" id="logoutBtn" class="logout-btn">Logout</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="section active" id="profileView">
+            <h2>My Profile</h2>
+            <div class="profile-container">
+                <div class="guardian-info">
+                    <h3>Guardian Information</h3>
+                    <div id="guardianInfo"></div>
+                </div>
+                <div class="elders-list">
+                    <h3>Elder Profiles</h3>
+                    <div id="eldersList"></div>
+                </div>
+            </div>
+            <button onclick="addNewElder()" id="addElderBtn">Add Another Elder</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Load profile data from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation bar functionality
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (hamburger) {
+                hamburger.addEventListener('click', function() {
+                    hamburger.classList.toggle('active');
+                    navLinks.classList.toggle('active');
+                });
+            }
+
+            // Load profile data
+            const guardianProfile = JSON.parse(localStorage.getItem('guardianProfile'));
+            const elderProfiles = JSON.parse(localStorage.getItem('elderProfiles')) || [];
+            
+            if (guardianProfile) {
+                updateProfileView(guardianProfile, elderProfiles);
+            } else {
+                // If no profile exists, redirect to login
+                window.location.href = 'index.html';
+            }
+        });
+
+        function updateProfileView(guardianProfile, elderProfiles) {
+            // Update guardian info
+            const guardianInfo = document.getElementById('guardianInfo');
+            guardianInfo.innerHTML = `
+                <p><strong>Name:</strong> ${guardianProfile.name}</p>
+                <p><strong>Age:</strong> ${guardianProfile.age}</p>
+                <p><strong>Gender:</strong> ${guardianProfile.gender}</p>
+                <p><strong>Email:</strong> ${guardianProfile.email}</p>
+                <p><strong>Phone:</strong> ${guardianProfile.phone}</p>
+                <p><strong>Address:</strong> ${guardianProfile.address}</p>
+                <p><strong>Pin Code:</strong> ${guardianProfile.pinCode}</p>
+                <p><strong>Emergency Contact:</strong> ${guardianProfile.emergencyContact}</p>
+                <div class="contact-info">
+                    <h4>Neighbour Information</h4>
+                    <p><strong>Name:</strong> ${guardianProfile.neighbourInfo.name}</p>
+                    <p><strong>Phone:</strong> ${guardianProfile.neighbourInfo.phone}</p>
+                    <p><strong>Home Number:</strong> ${guardianProfile.neighbourInfo.homeNumber}</p>
+                </div>
+                <div class="contact-info">
+                    <h4>Doctor Information</h4>
+                    <p><strong>Name:</strong> ${guardianProfile.doctorInfo.name}</p>
+                    <p><strong>Phone:</strong> ${guardianProfile.doctorInfo.phone}</p>
+                </div>
+            `;
+            
+            // Update elders list
+            const eldersList = document.getElementById('eldersList');
+            if (elderProfiles.length > 0) {
+                eldersList.innerHTML = elderProfiles.map((elder, index) => `
+                    <div class="elder-card">
+                        <h4>${elder.name}</h4>
+                        <p><strong>Age:</strong> ${elder.age}</p>
+                        <p><strong>Relation:</strong> ${elder.relationType}</p>
+                        <p><strong>Address:</strong> ${elder.address}</p>
+                        <p><strong>Pin Code:</strong> ${elder.pinCode}</p>
+                        
+                        <div class="medical-info">
+                            <h4>Medical History</h4>
+                            <div class="care-tags">
+                                ${elder.medicalHistory.conditions.map(condition => 
+                                    `<span class="care-tag">${condition}</span>`
+                                ).join('')}
+                                ${elder.medicalHistory.other ? 
+                                    `<span class="care-tag">${elder.medicalHistory.other}</span>` : 
+                                    ''}
+                            </div>
+                        </div>
+                        
+                        <div class="care-required">
+                            <h4>Care Required</h4>
+                            ${Object.entries(elder.careRequired).map(([category, services]) => 
+                                services.length ? `
+                                    <div class="care-category">
+                                        <h5>${category}</h5>
+                                        <div class="care-tags">
+                                            ${services.map(service => 
+                                                `<span class="care-tag">${service}</span>`
+                                            ).join('')}
+                                        </div>
+                                    </div>
+                                ` : ''
+                            ).join('')}
+                        </div>
+                        
+                        <div class="contact-info">
+                            <h4>Neighbour Information</h4>
+                            <p><strong>Name:</strong> ${elder.neighbourInfo.name}</p>
+                            <p><strong>Phone:</strong> ${elder.neighbourInfo.phone}</p>
+                            <p><strong>Home Number:</strong> ${elder.neighbourInfo.homeNumber}</p>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                eldersList.innerHTML = '<p>No elder profiles added yet.</p>';
+            }
+            
+            // Update add elder button state
+            document.getElementById('addElderBtn').disabled = elderProfiles.length >= 5;
+        }
+
+        function addNewElder() {
+            window.location.href = 'index.html#elderProfile';
+        }
+    </script>
+</body>
+</html> 

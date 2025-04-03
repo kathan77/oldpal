@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guardian - Caregiver Registration</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">Guardian</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="profile.html">My Profile</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="caregiver-register.html" class="active">Register as Caregiver</a></li>
+                <li><a href="#" id="logoutBtn" class="logout-btn" style="display: none;">Logout</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="section active">
+            <h2>Caregiver Registration</h2>
+            <form id="caregiverForm" onsubmit="handleCaregiverSubmit(event)" class="form-container">
+                <!-- Basic Information -->
+                <div class="form-section">
+                    <h3>Basic Information</h3>
+                    <div class="form-group">
+                        <label for="fullName">Full Name *</label>
+                        <input type="text" id="fullName" name="fullName" required minlength="2" maxlength="50">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">Address *</label>
+                        <div class="address-input">
+                            <input type="text" id="address" name="address" required>
+                            <button type="button" onclick="getLocation()" class="btn-secondary">
+                                <i class="fas fa-map-marker-alt"></i> Get Location
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="pincode">Pincode *</label>
+                        <input type="text" id="pincode" name="pincode" required pattern="[0-9]{6}" maxlength="6">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="education">Education *</label>
+                        <select id="education" name="education" required>
+                            <option value="">Select Education</option>
+                            <option value="highSchool">High School</option>
+                            <option value="diploma">Diploma</option>
+                            <option value="degree">Degree</option>
+                            <option value="postGraduate">Post Graduate</option>
+                            <option value="phd">PhD</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="experience">Work Experience (Years) *</label>
+                        <input type="number" id="experience" name="experience" required min="1" max="50">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="age">Age *</label>
+                        <input type="number" id="age" name="age" required min="18">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="gender">Gender *</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                            <option value="preferNotToSay">Prefer Not to Say</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Document Uploads -->
+                <div class="form-section">
+                    <h3>Document Uploads</h3>
+                    <div class="form-group">
+                        <label for="profilePhoto">Profile Photo *</label>
+                        <input type="file" id="profilePhoto" name="profilePhoto" accept="image/jpeg,image/png" required>
+                        <div id="profilePhotoPreview" class="photo-preview"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="certifications">Care/Nursing Certifications *</label>
+                        <input type="file" id="certifications" name="certifications" accept=".pdf,image/jpeg,image/png" required>
+                        <div id="certificationsPreview" class="file-preview"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="policeVerification">Police Verification Certificate *</label>
+                        <input type="file" id="policeVerification" name="policeVerification" accept=".pdf,image/jpeg,image/png" required>
+                        <div id="policeVerificationPreview" class="file-preview"></div>
+                    </div>
+                </div>
+
+                <!-- Service Configuration -->
+                <div class="form-section">
+                    <h3>Service Configuration</h3>
+                    <div class="form-group">
+                        <label>Service Offerings</label>
+                        <div id="serviceOfferings">
+                            <div class="service-offering">
+                                <input type="text" name="serviceName[]" placeholder="Service Name" required>
+                                <input type="number" name="servicePrice[]" placeholder="Price per day" required>
+                                <button type="button" onclick="removeService(this)" class="btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addService()" class="btn-secondary">
+                            <i class="fas fa-plus"></i> Add Service
+                        </button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="hasNGOAssociation" name="hasNGOAssociation">
+                            I am associated with an NGO/3rd-Party
+                        </label>
+                    </div>
+                    
+                    <div class="form-group" id="ngoProofGroup" style="display: none;">
+                        <label for="ngoProof">NGO/3rd-Party Affiliation Proof</label>
+                        <input type="file" id="ngoProof" name="ngoProof" accept=".pdf,image/jpeg,image/png">
+                        <div id="ngoProofPreview" class="file-preview"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">Register as Caregiver</button>
+            </form>
+        </section>
+    </div>
+
+    <script>
+        // Handle file upload previews
+        function handleFileUpload(input, previewId) {
+            const preview = document.getElementById(previewId);
+            const file = input.files[0];
+            
+            if (file) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                    }
+                    reader.readAsDataURL(file);
+                } else if (file.type === 'application/pdf') {
+                    preview.innerHTML = `<i class="fas fa-file-pdf"></i> ${file.name}`;
+                }
+            }
+        }
+
+        // Add service offering
+        function addService() {
+            const container = document.getElementById('serviceOfferings');
+            const newService = document.createElement('div');
+            newService.className = 'service-offering';
+            newService.innerHTML = `
+                <input type="text" name="serviceName[]" placeholder="Service Name" required>
+                <input type="number" name="servicePrice[]" placeholder="Price per day" required>
+                <button type="button" onclick="removeService(this)" class="btn-danger">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(newService);
+        }
+
+        // Remove service offering
+        function removeService(button) {
+            button.parentElement.remove();
+        }
+
+        // Toggle NGO proof upload
+        document.getElementById('hasNGOAssociation').addEventListener('change', function(e) {
+            const ngoProofGroup = document.getElementById('ngoProofGroup');
+            ngoProofGroup.style.display = e.target.checked ? 'block' : 'none';
+        });
+
+        // Get location
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        // In a real application, you would use these coordinates to get the address
+                        // using a geocoding service like Google Maps API
+                        alert('Location retrieved! Please enter your address manually.');
+                    },
+                    error => {
+                        alert('Error getting location: ' + error.message);
+                    }
+                );
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
+
+        // Handle form submission
+        function handleCaregiverSubmit(event) {
+            event.preventDefault();
+            
+            // Validate file sizes
+            const profilePhoto = document.getElementById('profilePhoto').files[0];
+            const certifications = document.getElementById('certifications').files[0];
+            const policeVerification = document.getElementById('policeVerification').files[0];
+            const ngoProof = document.getElementById('ngoProof').files[0];
+            
+            if (profilePhoto && profilePhoto.size > 5 * 1024 * 1024) {
+                alert('Profile photo must be less than 5MB');
+                return;
+            }
+            
+            if (certifications && certifications.size > 10 * 1024 * 1024) {
+                alert('Certifications must be less than 10MB');
+                return;
+            }
+            
+            if (policeVerification && policeVerification.size > 10 * 1024 * 1024) {
+                alert('Police verification must be less than 10MB');
+                return;
+            }
+            
+            if (ngoProof && ngoProof.size > 10 * 1024 * 1024) {
+                alert('NGO proof must be less than 10MB');
+                return;
+            }
+            
+            // Collect form data
+            const formData = new FormData(event.target);
+            const caregiverData = {
+                fullName: formData.get('fullName'),
+                address: formData.get('address'),
+                pincode: formData.get('pincode'),
+                education: formData.get('education'),
+                experience: formData.get('experience'),
+                age: formData.get('age'),
+                gender: formData.get('gender'),
+                hasNGOAssociation: formData.get('hasNGOAssociation') === 'on',
+                services: []
+            };
+            
+            // Collect service offerings
+            const serviceNames = formData.getAll('serviceName[]');
+            const servicePrices = formData.getAll('servicePrice[]');
+            for (let i = 0; i < serviceNames.length; i++) {
+                caregiverData.services.push({
+                    name: serviceNames[i],
+                    price: servicePrices[i]
+                });
+            }
+            
+            // Save caregiver profile to localStorage
+            localStorage.setItem('caregiverProfile', JSON.stringify(caregiverData));
+            localStorage.setItem('userType', 'caregiver');
+            
+            // Show success message and redirect to profile page
+            alert('Registration successful! You will be redirected to your profile.');
+            window.location.href = 'caregiver-profile.html';
+        }
+
+        // Initialize file upload previews
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            fileInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    const previewId = this.id + 'Preview';
+                    handleFileUpload(this, previewId);
+                });
+            });
+            
+            // Navigation bar functionality
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (hamburger) {
+                hamburger.addEventListener('click', function() {
+                    hamburger.classList.toggle('active');
+                    navLinks.classList.toggle('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

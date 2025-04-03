@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guardian - Caregiver Profile</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">Guardian</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="caregiver-profile.html" class="active">My Profile</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="#" id="logoutBtn" class="logout-btn">Logout</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="section active">
+            <h2>Caregiver Profile</h2>
+            <div class="profile-container">
+                <div class="caregiver-info">
+                    <div class="profile-header">
+                        <div class="profile-photo">
+                            <img id="profilePhotoPreview" src="" alt="Profile Photo">
+                        </div>
+                        <div class="profile-name">
+                            <h3 id="caregiverName"></h3>
+                            <p id="caregiverStatus">Status: <span id="verificationStatus">Pending Verification</span></p>
+                        </div>
+                    </div>
+
+                    <div class="profile-details">
+                        <h3>Basic Information</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Age</label>
+                                <p id="caregiverAge"></p>
+                            </div>
+                            <div class="info-item">
+                                <label>Gender</label>
+                                <p id="caregiverGender"></p>
+                            </div>
+                            <div class="info-item">
+                                <label>Education</label>
+                                <p id="caregiverEducation"></p>
+                            </div>
+                            <div class="info-item">
+                                <label>Experience</label>
+                                <p id="caregiverExperience"></p>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>Address</h3>
+                            <p id="caregiverAddress"></p>
+                            <p id="caregiverPincode"></p>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>Service Offerings</h3>
+                            <div id="serviceOfferings" class="service-list"></div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>Documents</h3>
+                            <div class="document-list">
+                                <div class="document-item">
+                                    <label>Care/Nursing Certifications</label>
+                                    <div id="certificationsPreview" class="file-preview"></div>
+                                </div>
+                                <div class="document-item">
+                                    <label>Police Verification</label>
+                                    <div id="policeVerificationPreview" class="file-preview"></div>
+                                </div>
+                                <div class="document-item" id="ngoProofSection" style="display: none;">
+                                    <label>NGO/3rd-Party Affiliation</label>
+                                    <div id="ngoProofPreview" class="file-preview"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load caregiver profile from localStorage
+            const caregiverProfile = JSON.parse(localStorage.getItem('caregiverProfile'));
+            
+            if (!caregiverProfile) {
+                window.location.href = 'caregiver-register.html';
+                return;
+            }
+
+            // Update profile information
+            document.getElementById('caregiverName').textContent = caregiverProfile.fullName;
+            document.getElementById('caregiverAge').textContent = caregiverProfile.age;
+            document.getElementById('caregiverGender').textContent = caregiverProfile.gender;
+            document.getElementById('caregiverEducation').textContent = caregiverProfile.education;
+            document.getElementById('caregiverExperience').textContent = `${caregiverProfile.experience} years`;
+            document.getElementById('caregiverAddress').textContent = caregiverProfile.address;
+            document.getElementById('caregiverPincode').textContent = caregiverProfile.pincode;
+
+            // Update service offerings
+            const serviceOfferings = document.getElementById('serviceOfferings');
+            caregiverProfile.services.forEach(service => {
+                const serviceDiv = document.createElement('div');
+                serviceDiv.className = 'service-item';
+                serviceDiv.innerHTML = `
+                    <div class="service-name">${service.name}</div>
+                    <div class="service-price">₹${service.price}/day</div>
+                `;
+                serviceOfferings.appendChild(serviceDiv);
+            });
+
+            // Update NGO association section
+            if (caregiverProfile.hasNGOAssociation) {
+                document.getElementById('ngoProofSection').style.display = 'block';
+            }
+
+            // Handle logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    localStorage.removeItem('caregiverProfile');
+                    localStorage.removeItem('userType');
+                    window.location.href = 'index.html';
+                });
+            }
+
+            // Handle hamburger menu
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (hamburger) {
+                hamburger.addEventListener('click', function() {
+                    hamburger.classList.toggle('active');
+                    navLinks.classList.toggle('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html> 
